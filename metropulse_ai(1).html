@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetroPulse AI | 捷運商圈智慧導流與全民創意平台</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --metro-blue: #00529B;
+            --metro-orange: #F58220;
+            --neutral-warm: #FAF9F6;
+        }
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: var(--neutral-warm);
+            color: #1a1a1a;
+            scroll-behavior: smooth;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+        .nav-link.active {
+            color: var(--metro-blue);
+            font-weight: 700;
+            border-bottom: 2px solid var(--metro-blue);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-[#00529B] flex items-center justify-center text-white font-bold">M</div>
+                    <span class="font-black text-xl tracking-tight text-slate-800">MetroPulse <span class="text-[#F58220]">AI</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#problem" class="nav-link text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">痛點分析</a>
+                    <a href="#solution" class="nav-link text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">解決方案</a>
+                    <a href="#tech" class="nav-link text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">技術優勢</a>
+                    <a href="#impact" class="nav-link text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">策略價值</a>
+                </div>
+                <button class="bg-[#00529B] text-white px-5 py-2 rounded-full text-sm font-bold shadow-lg shadow-blue-900/20 hover:bg-blue-800 transition-all">
+                    索取提案書
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="pt-32 pb-16 px-4">
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold mb-6">
+                ✨ 2026 台北捷運黑客松獲獎概念
+            </div>
+            <h1 class="text-4xl md:text-6xl font-black text-slate-900 leading-tight mb-6">
+                讓捷運流量轉化為<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-orange-500">流動的商圈經濟</span>
+            </h1>
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed mb-10">
+                透過在地化 AI Agent 多智慧體協作與「社群影響力證明」機制，我們連結百萬乘客的社群渲染力與在地商家的行銷需求，建構互利共榮的北捷點數經濟圈。
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <div class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl shadow-sm">
+                    <span class="text-blue-600 text-xl">🤖</span>
+                    <span class="text-sm font-semibold text-slate-700">Gemma 4 驅動</span>
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl shadow-sm">
+                    <span class="text-orange-500 text-xl">⚡</span>
+                    <span class="text-sm font-semibold text-slate-700">NVIDIA 24G 本地推論</span>
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl shadow-sm">
+                    <span class="text-green-500 text-xl">💾</span>
+                    <span class="text-sm font-semibold text-slate-700">Supabase 數據中樞</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
+
+        <!-- Section: Problem -->
+        <section id="problem" class="scroll-mt-24">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-extrabold text-slate-900 mb-6">
+                        面對停滯的「捷運點數」與<br><span class="text-blue-600">商家的行銷盲點</span>
+                    </h2>
+                    <p class="text-slate-600 mb-8 leading-relaxed">
+                        本節分析台北捷運生態系目前的兩大核心瓶頸。儘管擁有數百萬通勤族，但捷運點數（Metro Points）主要被動用於票價折抵，缺乏對外部商圈的流動性。同時，捷運出口的小型商家面臨短影音行銷的技術壁壘，無法有效捕捉路過的高頻流量。
+                    </p>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-white rounded-2xl border-l-4 border-rose-500 shadow-sm">
+                            <h4 class="font-bold text-rose-700 mb-1">Stagnant Point Velocity</h4>
+                            <p class="text-sm text-slate-500">點數多沉澱於票價系統，無法流入在地商圈，導致經濟循環停滯。</p>
+                        </div>
+                        <div class="p-4 bg-white rounded-2xl border-l-4 border-orange-500 shadow-sm">
+                            <h4 class="font-bold text-orange-700 mb-1">Marketing Literacy Gap</h4>
+                            <p class="text-sm text-slate-500">微型商家缺乏預算與技術生成高品質 IG Reels 或 TikTok 內容。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-card p-6 rounded-3xl">
+                    <div class="mb-4 text-center">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">點數流動性分析 (現況 vs. MetroPulse)</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="pointsVelocityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Solution 1 - Proof of Influence -->
+        <section id="solution" class="scroll-mt-24 bg-white rounded-[3rem] p-8 md:p-16 shadow-xl shadow-slate-200/50">
+            <div class="text-center mb-16 max-w-3xl mx-auto">
+                <h2 class="text-3xl font-black text-slate-900 mb-4">去中心化的獎勵機制：Proof of Influence</h2>
+                <p class="text-slate-600">
+                    本區塊展示 MetroPulse AI 的核心演算法。我們將乘客轉化為微型影響力者，透過社群媒體 API 驗證真實流量，並根據時空情境（如週末大稻埕活動）自動發放對應權重的捷運點數。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+                <!-- Formula Card -->
+                <div class="bg-slate-900 text-white rounded-3xl p-8 flex flex-col justify-center overflow-hidden relative">
+                    <div class="absolute top-0 right-0 p-8 opacity-10 text-8xl font-black italic">METRO</div>
+                    <h3 class="text-xl font-bold mb-8 text-blue-400">動態獎勵公式</h3>
+                    <div class="text-3xl md:text-4xl font-mono text-center my-8 p-6 bg-slate-800 rounded-2xl border border-slate-700">
+                        P = ⌊ ( α · V + β · E ) · S ⌋
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 text-xs font-medium text-slate-400 mt-4">
+                        <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span> P: 結算捷運點數</div>
+                        <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-orange-500"></span> V: 經驗證流量 (Views)</div>
+                        <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-500"></span> E: 互動權重 (Engagement)</div>
+                        <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-purple-500"></span> S: 時空加成 (Spatio-temporal)</div>
+                    </div>
+                </div>
+
+                <!-- Step Card -->
+                <div class="space-y-4">
+                    <div class="flex gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">1</div>
+                        <div>
+                            <h4 class="font-bold text-slate-800">解鎖任務</h4>
+                            <p class="text-sm text-slate-500">乘客在捷運 App 接收站點周邊商家的行銷任務 (Quests)。</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">2</div>
+                        <div>
+                            <h4 class="font-bold text-slate-800">真實創作</h4>
+                            <p class="text-sm text-slate-500">在商家門口拍攝短影音並分享至社群平台，標註合作店家。</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">3</div>
+                        <div>
+                            <h4 class="font-bold text-slate-800">AI 驗證獲點</h4>
+                            <p class="text-sm text-slate-500">系統透過 API 獲取流量數據，經防詐欺層過濾後，即時派發點數。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Technical Stack -->
+        <section id="tech" class="scroll-mt-24">
+            <div class="mb-12 text-center md:text-left">
+                <h2 class="text-3xl font-black text-slate-900 mb-4">高性能本地化 AI 基礎建設</h2>
+                <p class="text-slate-600 max-w-3xl">
+                    為了確保數據隱私與零延遲生成的體驗，我們選擇在台北捷運節點部署 **NVIDIA 24GB VRAM** 本機工作站。本節詳細說明我們如何利用 Gemma 4 與 CrewAI 達成「自動化行銷部門」的願景。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card p-8 rounded-3xl border-t-4 border-blue-500">
+                    <h3 class="font-black text-xl mb-4">Local Intelligence</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">
+                        利用 **vLLM** 與 **TensorRT-LLM** 量化技術，在 24G 記憶體中實現高效能非同步推理，消除雲端 API 的昂貴成本。
+                    </p>
+                </div>
+                <div class="glass-card p-8 rounded-3xl border-t-4 border-orange-500">
+                    <h3 class="font-black text-xl mb-4">Multi-Agent Workflow</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">
+                        透過 **CrewAI** 框架，調度數據分析、文案與視覺 Agent，商家只需上傳一張照片，AI 即可生成 15 秒在地化宣傳片。
+                    </p>
+                </div>
+                <div class="glass-card p-8 rounded-3xl border-t-4 border-emerald-500">
+                    <h3 class="font-black text-xl mb-4">Fraud Resilience</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">
+                        實現行為聚類與異常偵測層，過濾機器人刷量，確保每一顆發出的 Metro Point 都對應真實的消費影響力。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Impact -->
+        <section id="impact" class="scroll-mt-24 pb-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="order-2 lg:order-1">
+                    <div class="glass-card p-6 rounded-3xl">
+                        <div class="chart-container">
+                            <canvas id="impactRadarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-1 lg:order-2">
+                    <h2 class="text-3xl font-black text-slate-900 mb-6">商圈共榮的戰略價值</h2>
+                    <p class="text-slate-600 mb-8 leading-relaxed">
+                        MetroPulse AI 不僅僅是一個行銷工具，更是一個能活化整體交通生態系的賦能平台。下圖雷達表展示了本系統在乘客滿意度、商圈營收與捷運品牌影響力等維度的綜合提升預測。
+                    </p>
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600 flex-shrink-0">🚆</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">對台北捷運</h4>
+                                <p class="text-sm text-slate-500">提高 App 日活躍度 (DAU)，加速點數周轉率，獲取百萬次免費品牌曝光。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center text-orange-600 flex-shrink-0">🛍️</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">對在地商家</h4>
+                                <p class="text-sm text-slate-500">零成本、一鍵式的 AI 行銷代理人，直接驅動實體店面客流量 (Foot Traffic)。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 flex-shrink-0">💃</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">對乘客</h4>
+                                <p class="text-sm text-slate-500">將乏味的通勤轉化為充滿驚喜的互動任務，並獲得實質的購物優惠獎勵。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-white py-12 px-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 border-b border-slate-800 pb-8 mb-8">
+            <div class="text-center md:text-left">
+                <div class="font-black text-2xl tracking-tight mb-2">MetroPulse <span class="text-[#F58220]">AI</span></div>
+                <p class="text-slate-400 text-sm">台北捷運黑客松提案展示 - AI Agent 多智慧體導流系統</p>
+            </div>
+            <div class="flex gap-6">
+                <a href="#" class="text-slate-400 hover:text-white transition-colors">系統文檔</a>
+                <a href="#" class="text-slate-400 hover:text-white transition-colors">技術規格書</a>
+                <a href="#" class="text-slate-400 hover:text-white transition-colors">隱私條款</a>
+            </div>
+        </div>
+        <div class="text-center text-slate-500 text-xs font-medium">
+            © 2026 MetroPulse AI. Powered by Gemma 4 & NVIDIA Infrastructure.
+        </div>
+    </footer>
+
+    <script>
+        // Utility for label wrapping
+        const wrapLabel = (label, limit = 16) => {
+            if (label.length <= limit) return label;
+            const words = label.split(' ');
+            let lines = [];
+            let currentLine = '';
+            words.forEach(word => {
+                if ((currentLine + word).length > limit) {
+                    lines.push(currentLine.trim());
+                    currentLine = word + ' ';
+                } else {
+                    currentLine += word + ' ';
+                }
+            });
+            lines.push(currentLine.trim());
+            return lines;
+        };
+
+        // Common Tooltip Config
+        const tooltipConfig = {
+            plugins: {
+                tooltip: {
+                    backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                    padding: 12,
+                    cornerRadius: 8,
+                    titleFont: { size: 14, weight: 'bold' },
+                    bodyFont: { size: 12 }
+                }
+            }
+        };
+
+        // Chart 1: Points Velocity
+        const initPointsVelocityChart = () => {
+            const ctx = document.getElementById('pointsVelocityChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['點數流動率', '商圈轉換率', '乘客參與度', '品牌印象分'],
+                    datasets: [
+                        {
+                            label: '當前現況',
+                            data: [25, 12, 18, 40],
+                            backgroundColor: 'rgba(244, 63, 94, 0.6)',
+                            borderRadius: 8,
+                        },
+                        {
+                            label: 'MetroPulse 預測',
+                            data: [88, 72, 85, 92],
+                            backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                            borderRadius: 8,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 12 } } },
+                        ...tooltipConfig.plugins
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        };
+
+        // Chart 2: Strategic Impact Radar
+        const initImpactRadarChart = () => {
+            const ctx = document.getElementById('impactRadarChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['點數去中心化', '商家獲客成本', '系統可擴展性', '數據隱私安全性', '社群品牌聲量'],
+                    datasets: [{
+                        label: '系統效能指標',
+                        data: [95, 20, 92, 98, 88], // Note: Low marketing cost is good, but for radar we usually show performance
+                        backgroundColor: 'rgba(245, 130, 32, 0.2)',
+                        borderColor: '#F58220',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#F58220',
+                        pointHoverBorderColor: '#fff',
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        ...tooltipConfig.plugins
+                    },
+                    scales: {
+                        r: {
+                            min: 0,
+                            max: 100,
+                            ticks: { display: false },
+                            grid: { color: 'rgba(148, 163, 184, 0.2)' },
+                            pointLabels: { font: { size: 12, weight: '600' }, color: '#475569' }
+                        }
+                    }
+                }
+            });
+        };
+
+        // Navigation Highlight
+        const handleNav = () => {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            window.addEventListener('scroll', () => {
+                let current = "";
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (pageYOffset >= (sectionTop - 200)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        };
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            initPointsVelocityChart();
+            initImpactRadarChart();
+            handleNav();
+        });
+    </script>
+
+    <!-- Chosen Palette: Metro Modernism (Taipei Metro Blue #00529B, Action Orange #F58220, Neutral Warm Background #FAF9F6, Slate Accents) -->
+    <!-- Application Structure Plan:
+        1. Hero Section: 確立 MetroPulse AI 的願景，即時呈現關鍵技術與專案地位。
+        2. 痛點分析 (Problem): 以對比數據圖表 (現況 vs 解決方案) 視覺化目前的經濟瓶頸，建立緊迫性。
+        3. 獎勵機制 (Solution 1): 互動式呈現核心演算法公式與用戶操作路徑，解釋如何將流量轉化為點數。
+        4. 技術架構 (Tech): 強調本地化 NVIDIA 硬體與多智慧體協作，展現技術可行性與安全性。
+        5. 策略價值 (Impact): 使用雷達圖綜合展示對 C端、B端與北捷官方的加值效益，作為結尾強力的價值主張。
+        選擇此結構是為了符合「從問題出發 -> 提出機制 -> 技術證明 -> 最終價值」的說服邏輯，且透過單頁式導覽確保閱讀流暢性。
+    -->
+    <!-- Visualization & Content Choices:
+        - Points Velocity (Bar Chart) -> Goal: Compare. Method: Chart.js Bar Chart. Justification: 最直覺展示現況與預測的顯著差異。
+        - Reward Formula (Styled HTML) -> Goal: Inform. Method: CSS-styled Box. Justification: 公式需要高清晰度與科技感，非圖表能完全承載。
+        - Strategic Impact (Radar Chart) -> Goal: Organize/Relationships. Method: Chart.js Radar Chart. Justification: 展示多維度（效能、成本、隱私）的平衡與優越性。
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. All charts are Canvas-based.
+    -->
+</body>
+</html>
